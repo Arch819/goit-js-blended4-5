@@ -1,4 +1,6 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import storage from "./storage";
+
 // ЗАДАЧА 1
 
 // Якщо імейл і пароль користувача збігаються, зберігайте дані з форми при сабмите
@@ -23,21 +25,33 @@ let userData = {};
 const form = document.querySelector('.login-form');
 const loginBtn = document.querySelector('.login-btn');
 const inputs = document.querySelectorAll('.login-input');
-
+const todoForm = document.querySelector('.todo');
+const saveData = storage.load(LOCAL_KEY);
 
 form.addEventListener('input', onSaveData);
 form.addEventListener('submit', clickOnData);
 
-
+if (saveData) {
+  loginBtn.textContent = 'Logout';
+  inputs.forEach(input => input.setAttribute('readonly', true));
+}
 function clickOnData(evt) {
   evt.preventDefault();
+  if (loginBtn.textContent === 'Logout') {
+    loginBtn.textContent = 'Login'
+    inputs.forEach(input => input.removeAttribute('readonly'))
+    storage.remove(LOCAL_KEY);
+    userData = {}
+    todoForm.style.display = 'none'
+    return
+  }
   const { email, password } = userData;
   if (!email || !password) {
-    alert('Заповніть усі поля')
+    Notify.failure('Заповніть усі поля');
     return;
   }
   if (email !== USER_DATA.email || password !== USER_DATA.password) {
-    alert('Не співпадають дані') 
+    Notify.failure('Не співпадають дані') 
     return;
 
   } 
@@ -46,6 +60,8 @@ function clickOnData(evt) {
   loginBtn.textContent = 'Logout';
   inputs.forEach(input => input.setAttribute('readonly', true));
   form.reset();
+      todoForm.style.display = 'flex'
+
 }
 
 function onSaveData(event) {
