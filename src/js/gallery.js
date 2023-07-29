@@ -8,11 +8,29 @@ const apiGallery = new UnsplashAPI();
 
 const container = document.getElementById('tui-pagination-container');
 const form = document.querySelector('.js-search-form');
+
 const options = {
   totalItems: 0,
   itemsPerPage: 12,
   visiblePages: 5,
   page: 1,
+  template: {
+    page: '<a href="#" class="tui-page-btn">{{page}}</a>',
+    currentPage:
+      '<strong class="tui-page-btn tui-is-selected">{{page}}</strong>',
+    moveButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}">{{type}}</span>' +
+      '</a>',
+    disabledMoveButton:
+      '<span class="tui-page-btn tui-is-disabled tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}">{{type}}</span>' +
+      '</span>',
+    moreButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}-is-ellip">' +
+      '<span class="tui-ico-ellip">...</span>' +
+      '</a>',
+  },
 };
 const pagination = new Pagination(container, options);
 
@@ -51,13 +69,13 @@ function onSubmitForm(event) {
 }
 
 function getPopular(event) {
-    const currentPage = event.page;
-    apiGallery.getPopularImage(currentPage).then(({ results, total }) => {
-      const markup = createGalleryCard(results);
-      galleryRef.innerHTML = markup;
-    });
-};
-  
+  const currentPage = event.page;
+  apiGallery.getPopularImage(currentPage).then(({ results, total }) => {
+    const markup = createGalleryCard(results);
+    galleryRef.innerHTML = markup;
+  });
+}
+
 function getByQuery(event) {
   const currentPage = event.page;
   apiGallery.getImagesByQuery(currentPage).then(({ results, total }) => {
